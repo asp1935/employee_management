@@ -30,7 +30,7 @@ A standard application setup with separate **frontend** and **backend** folders.
 ### 1️⃣ Clone the repository
 
 ```bash
-git clone https://github.com/your-username/mern-app.git
+git clone https://github.com/asp1935/employee_management.git
 cd employee-management
 ```
 
@@ -101,37 +101,7 @@ Frontend will run on:
 http://localhost:5173
 ```
 
----
 
-## 🔁 API Communication
-
-Example Axios setup:
-
-```js
-import axios from 'axios';
-
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  withCredentials: true,
-});
-
-export default api;
-```
-
----
-
-## 🔐 Authentication Flow (JWT)
-
-1. User logs in
-2. Backend returns access token
-3. Token stored in memory / Redux
-4. Token sent in Authorization header
-
-```http
-Authorization: Bearer <token>
-```
-
----
 
 ## 🧪 Scripts
 
