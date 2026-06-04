@@ -33,8 +33,12 @@ function Login() {
       dispatch(setUser(user));
 
       // route by role
-      if (user.role === "admin") navigate("/admin");
-      else navigate("/dashboard");
+      if (user.role === "admin"){
+         navigate("/admin");
+      }
+      else {
+        navigate("/dashboard");
+      }
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
     } finally {

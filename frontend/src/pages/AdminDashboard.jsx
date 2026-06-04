@@ -68,7 +68,6 @@ function AdminDashboard() {
         }
     };
 
-
     const deleteUser = async (id) => {
         if (!window.confirm("Are you sure?")) return;
 
@@ -80,7 +79,6 @@ function AdminDashboard() {
             setErrorMsg(getApiError(err));
         }
     };
-
 
     return (
         <div>
@@ -140,6 +138,7 @@ function AdminDashboard() {
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="text-gray-600">{u.email}</div>
                                             </td>
+                                            
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 {editingUser === u._id ? (
                                                     <div className="flex gap-2">

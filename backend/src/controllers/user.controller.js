@@ -4,8 +4,8 @@ import { errorRes, successRes } from "../utils/APIResponse.js";
 import { asyncHandler } from "../utils/AsyncHandler.js";
 
 const getAllUsers = asyncHandler(async (req, res) => {
-    const users = await User.find().select('-password');
-    return successRes(res, 'Users fetched', { users });
+    const users = await User.find({isDeleted : false}).select('-password');
+    return successRes(res, 'Users fetched', { users }); 
 });
 
 const updateRole = asyncHandler(async (req, res) => {

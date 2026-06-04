@@ -40,6 +40,7 @@ function Signup() {
       if (form.role === "employee" && form.profilePhoto) data.append("profilePhoto", form.profilePhoto);
 
       const res = await api.post("/auth/signup", data);
+      
       if (res.data.success || res.status === 200) {
         setSuccess("Account created successfully! Redirecting to login...");
         setTimeout(() => navigate("/"), 1500);

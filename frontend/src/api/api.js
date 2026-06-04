@@ -21,27 +21,41 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (res) => res,
   async (error) => {
-    // store original request
     const originalReq = error.config;
+    const requestUrl = originalReq?.url || '';
 
-    // Handle expired access token
-    if (error.response?.status === 401 && !originalReq._retry) {
-      
+    const isAuthRequest = [
+      '/auth/login',
+      '/auth/signup',
+      '/auth/refresh-token',
+      '/auth/logout',
+    ].some((path) => requestUrl.includes(path));
+
+    // Do not attempt refresh for auth routes themselves
+    if (isAuthRequest) {
+      return Promise.reject(error);
+    }
+
+    // Handle expired access token for non-auth requests only
+    if (error.response?.status === 401 && originalReq && !originalReq._retry) {
       originalReq._retry = true;
 
       try {
-        const resp = await api.post("/auth/refresh-token");
-
+        const resp = await api.post('/auth/refresh-token');
         const newAccessToken = resp.data.data.accessToken;
         setAccessToken(newAccessToken);
 
-        // Retry original request
+        originalReq.headers = originalReq.headers || {};
         originalReq.headers.Authorization = `Bearer ${newAccessToken}`;
         return api(originalReq);
-
-      } catch (err) {   // Refresh token also expired or invalid then logout
+      } catch (err) {
         clearAccessToken();
-        window.location.href = "/login";
+        const publicPaths = ['/', '/login', '/signup'];
+        const currentPath = window.location.pathname;
+
+        if (!publicPaths.includes(currentPath)) {
+          window.location.href = '/login';
+        }
         return Promise.reject(err);
       }
     }
