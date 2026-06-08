@@ -309,6 +309,87 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Get My Managed Employees (Manager/Admin Only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/my-employees",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "my-employees"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register Employee under Manager (Manager/Admin Only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Jane Doe",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "jane@example.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "password123",
+                  "type": "text"
+                },
+                {
+                  "key": "profilePhoto",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/register-employee",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "register-employee"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },

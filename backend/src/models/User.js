@@ -41,6 +41,11 @@ const userSchema = new mongoose.Schema({
     isDeleted: {
         type: Boolean,
         default: false
+    },
+    manager: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        default: null
     }
 }, { timestamps: true });
 

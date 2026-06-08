@@ -149,3 +149,28 @@ curl -X POST http://localhost:8000/api/tasks/<TASK_ID>/comments \
     "text": "Started working on the performance charts today."
   }'
 ```
+
+---
+
+## Manager-Specific User Management APIs (Manager/Admin Only)
+All these routes require a valid Access Token (JWT) in the Authorization header.
+
+### Register Employee under Manager
+Allows a logged-in Manager or Admin to register a new employee. The registered employee's `manager` field is automatically set to the creator's ID. Requires `multipart/form-data`.
+
+```bash
+curl -X POST http://localhost:8000/api/users/register-employee \
+  -H "Authorization: Bearer <YOUR_ACCESS_TOKEN>" \
+  -F "name=Jane Doe" \
+  -F "email=jane@example.com" \
+  -F "password=password123" \
+  -F "profilePhoto=@/path/to/photo.jpg"
+```
+
+### Get My Managed Employees
+Retrieves only the active, non-deleted employees managed by the logged-in Manager/Admin.
+
+```bash
+curl -X GET http://localhost:8000/api/users/my-employees \
+  -H "Authorization: Bearer <YOUR_ACCESS_TOKEN>"
+```

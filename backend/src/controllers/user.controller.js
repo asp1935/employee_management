@@ -73,12 +73,60 @@ const currentUser = asyncHandler(async (req, res) => {
     return successRes(res, 'Current user fetched', { user: req.user });
 });
 
+const registerEmployee = asyncHandler(async (req, res) => {
+    const { name, email, password } = req.body;
+    const profilePhotoUrl = req.file ? req.file.path : null;
+
+    if ([name, email, password].some(field => String(field || '').trim() === '')) {
+        return errorRes(res, 'Name, email, and password are required', {}, 400);
+    }
+
+    if (!profilePhotoUrl) {
+        return errorRes(res, 'Employee must upload a profile photo', {}, 400);
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+        return errorRes(res, 'Email is already registered', {}, 400);
+    }
+
+    const employee = await User.create({
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        password,
+        role: 'employee',
+        profilePhotoUrl,
+        manager: req.user._id
+    });
+
+    const createdEmployee = await User.findById(employee._id).select(
+        'name email role profilePhotoUrl status manager createdAt updatedAt'
+    );
+
+    if (!createdEmployee) {
+        return errorRes(res, 'Something went wrong while registering employee', {}, 500);
+    }
+
+    return successRes(res, 'Employee registered successfully', createdEmployee);
+});
+
+const getMyEmployees = asyncHandler(async (req, res) => {
+    const employees = await User.find({
+        role: 'employee',
+        manager: req.user._id,
+        isDeleted: false
+    }).select('-password');
+
+    return successRes(res, 'Employees fetched successfully', { employees });
+});
+
 
 export {
     getAllUsers,
     updateRole,
     updateStatus,
     softDeleteUser,
-    currentUser
-
+    currentUser,
+    registerEmployee,
+    getMyEmployees
 }
