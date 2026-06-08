@@ -174,3 +174,32 @@ Retrieves only the active, non-deleted employees managed by the logged-in Manage
 curl -X GET http://localhost:8000/api/users/my-employees \
   -H "Authorization: Bearer <YOUR_ACCESS_TOKEN>"
 ```
+
+---
+
+## Analytical APIs
+All these routes require a valid Access Token (JWT) in the Authorization header.
+
+### Admin Analytics (Admin Only)
+Fetches system-wide user counts (grouped by role/status), system task counts (by status), and total security logs count.
+
+```bash
+curl -X GET http://localhost:8000/api/analytics/admin \
+  -H "Authorization: Bearer <YOUR_ACCESS_TOKEN>"
+```
+
+### Manager Analytics (Manager/Admin Only)
+Fetches total managed employees, total tasks assigned by the manager, task statuses count, and workload distribution per employee.
+
+```bash
+curl -X GET http://localhost:8000/api/analytics/manager \
+  -H "Authorization: Bearer <YOUR_ACCESS_TOKEN>"
+```
+
+### Employee Analytics (All Roles)
+Fetches total tasks assigned to the employee, status counts, completion rate percentage, and total comment count.
+
+```bash
+curl -X GET http://localhost:8000/api/analytics/employee \
+  -H "Authorization: Bearer <YOUR_ACCESS_TOKEN>"
+```

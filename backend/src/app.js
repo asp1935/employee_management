@@ -27,9 +27,11 @@ app.get('/api/healthcheck', (req, res) => {
 import authRoute from './routes/auth.route.js';
 import userRoute from './routes/user.route.js';
 import taskRoute from './routes/task.route.js';
+import analyticsRoute from './routes/analytics.route.js';
 
 app.use('/api/auth',authRoute);
 app.use('/api/users',userRoute);
 app.use('/api/tasks',taskRoute);
+app.use('/api/analytics',analyticsRoute);
 
 export default app;
