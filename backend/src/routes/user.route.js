@@ -1,13 +1,19 @@
 import { Router } from "express";
 import { authRoles, verifyJWT } from "../middlewares/auth.middleware.js";
-import { getAllUsers, softDeleteUser, updateRole, updateStatus } from "../controllers/user.controller.js";
+import { currentUser, getAllUsers, softDeleteUser, updateRole, updateStatus } from "../controllers/user.controller.js";
 
 const router=Router();
 
-router.use(verifyJWT,authRoles('admin'));
+// All user routes require authentication
+router.use(verifyJWT);
 
-router.route('/current').get(getAllUsers);
-router.route('/').get(getAllUsers)
+// Access current logged-in user profile (all roles)
+router.route('/current').get(currentUser);
+
+// Admin-only user management routes
+router.route('/').get(authRoles('admin','manager'),getAllUsers);
+router.use(authRoles('admin'));
+
 router.route('/:id/role').patch(updateRole);
 router.route('/:id/status').patch(updateStatus);
 router.route('/:id').delete(softDeleteUser);

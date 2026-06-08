@@ -13,7 +13,7 @@ function Dashboard() {
 
     const handleLogout = async () => {
         try {
-            await api.post("/users/logout");
+            await api.post("/auth/logout");
         } catch (err) {
             console.error(err);
         } finally {
