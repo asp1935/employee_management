@@ -25,6 +25,10 @@ router.route("/:id/status").patch(updateTaskStatus);
 // Add task comment: open to all authenticated (authorized in controller)
 router.route("/:id/comments").post(addTaskComment);
 
+router.route("/:id")
+    .delete(authRoles("manager", "admin"), deleteTask)
+    .patch(authRoles("manager", "admin"), updateTaskDetails);
+
 router.route("/:id").get(getTaskById);
 
 export default router;

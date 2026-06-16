@@ -163,10 +163,81 @@ const addTaskComment = asyncHandler(async (req, res) => {
     return successRes(res, "Comment added successfully", updatedTask);
 });
 
+// @desc Delete a task (Manager/Admin only)
+// @route DELETE /api/tasks/:id
+// @access Private (Manager/Admin)
+const deleteTask = asyncHandler(async (req, res) => {
+    const taskId = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(taskId)) {
+        return errorRes(res, "Invalid Task ID", {}, 400);
+    }
+    const task = await Task.findById(taskId);
+    if (!task) {
+        return errorRes(res, "Task not found", {}, 404);
+    }
+    // Authorization: Only manager or admin can delete
+    if (!["manager", "admin"].includes(req.user.role)) {
+        return errorRes(res, "You are not authorized to delete this task", {}, 403);
+    }
+    await Task.deleteOne({ _id: taskId });
+    return successRes(res, "Task deleted successfully", { deletedTaskId: taskId });
+});
+
+// @desc Update task details (title, description, assignedTo) (Manager/Admin only)
+// @route PATCH /api/tasks/:id
+// @access Private (Manager/Admin)
+const updateTaskDetails = asyncHandler(async (req, res) => {
+    const taskId = req.params.id;
+    const { title, description, assignedTo } = req.body;
+    if (!mongoose.Types.ObjectId.isValid(taskId)) {
+        return errorRes(res, "Invalid Task ID", {}, 400);
+    }
+    const task = await Task.findById(taskId);
+    if (!task) {
+        return errorRes(res, "Task not found", {}, 404);
+    }
+    // Authorization: Only manager or admin can update details
+    if (!["manager", "admin"].includes(req.user.role)) {
+        return errorRes(res, "You are not authorized to update this task", {}, 403);
+    }
+    const updates = {};
+    if (title && String(title).trim()) {
+        updates.title = title.trim();
+    }
+    if (description && String(description).trim()) {
+        updates.description = description.trim();
+    }
+    if (assignedTo) {
+        if (!mongoose.Types.ObjectId.isValid(assignedTo)) {
+            return errorRes(res, "Invalid assignedTo user ID", {}, 400);
+        }
+        const assignee = await User.findById(assignedTo);
+        if (!assignee || assignee.isDeleted) {
+            return errorRes(res, "Assigned user not found", {}, 404);
+        }
+        if (assignee.role !== "employee") {
+            return errorRes(res, "Tasks can only be assigned to users with the 'employee' role", {}, 400);
+        }
+        updates.assignedTo = assignedTo;
+    }
+    if (Object.keys(updates).length === 0) {
+        return errorRes(res, "No valid fields provided for update", {}, 400);
+    }
+    Object.assign(task, updates);
+    await task.save();
+    const updatedTask = await Task.findById(task._id)
+        .populate("assignedTo", "name email role profilePhotoUrl status")
+        .populate("assignedBy", "name email role")
+        .populate("comments.author", "name email role profilePhotoUrl");
+    return successRes(res, "Task details updated successfully", updatedTask);
+});
+
 export {
     createTask,
     getTasks,
     updateTaskStatus,
     addTaskComment,
-    getTaskById
+    getTaskById,
+    deleteTask,
+    updateTaskDetails
 };
