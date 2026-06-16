@@ -4,7 +4,8 @@ import {
     createTask,
     getTasks,
     updateTaskStatus,
-    addTaskComment
+    addTaskComment,
+    getTaskById
 } from "../controllers/task.controller.js";
 
 const router = Router();
@@ -23,5 +24,7 @@ router.route("/:id/status").patch(updateTaskStatus);
 
 // Add task comment: open to all authenticated (authorized in controller)
 router.route("/:id/comments").post(addTaskComment);
+
+router.route("/:id").get(getTaskById);
 
 export default router;

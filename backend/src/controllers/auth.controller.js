@@ -76,7 +76,9 @@ const login = asyncHandler(async (req, res) => {
         await Log.create({ type: 'auth', message: 'Login failed: no user', ip, route: req.originalUrl, meta: { email } });
         return errorRes(res, 'Invalid email or password',{}, 401);
     }
-    if (user.isDeleted || user.status !== 'active') {
+
+    // user.status !== 'active'
+    if (user.isDeleted  ) {
         return errorRes(res, 'User not Active', {}, 403);
     }
 
@@ -88,7 +90,7 @@ const login = asyncHandler(async (req, res) => {
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
 
-        user.failedLoginAttempts = (user.failedLoginAttempts || 0) + 1;
+        user.failedLoginAttempts = (user.failedLoginAttempts || 0) + 1;    
         if (user.failedLoginAttempts >= 3) {
             user.lockUntil = new Date(Date.now() + 30 * 1000);
             user.failedLoginAttempts = 0;

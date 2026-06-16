@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Task } from "../models/Task.js";
 import { User } from "../models/User.js";
 import { errorRes, successRes } from "../utils/APIResponse.js";
@@ -73,6 +74,27 @@ const getTasks = asyncHandler(async (req, res) => {
     return successRes(res, "Tasks fetched successfully", { tasks });
 });
 
+const getTaskById= asyncHandler(async(req,res)=>{
+    const taskId=req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(taskId)) {
+        return errorRes(res, "Invalid Task ID", {}, 400);
+    }
+
+    const task = await Task.findById(taskId)
+        .populate("assignedTo", "name email role profilePhotoUrl status")
+        .populate("assignedBy", "name email role")
+        .populate("comments.author", "name email role profilePhotoUrl");
+
+    if(!task){
+        return errorRes(res,"Task Not Found",{},404);
+    }
+    
+
+    return successRes(res, "Task Fetched Successfully", task);
+
+})
+
 // @desc Update task status
 // @route PATCH /api/tasks/:id/status
 // @access Private (Assigned employee or Manager/Admin)
@@ -145,5 +167,6 @@ export {
     createTask,
     getTasks,
     updateTaskStatus,
-    addTaskComment
+    addTaskComment,
+    getTaskById
 };
