@@ -510,7 +510,47 @@
             }
           },
           "response": []
+
         },
+        {
+            "name": "Update Task Details (Manager/Admin)",
+            "request": {
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "{{accessToken}}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "method": "PATCH",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"title\": \"Updated Title\",\n  \"description\": \"Updated description\",\n  \"assignedTo\": \"{{employeeId}}\"\n}"
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/tasks/{{taskId}}",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "tasks",
+                        "{{taskId}}"
+                    ]
+                }
+            },
+            "response": []
+        },
+        
         {
           "name": "Add Task Comment",
           "request": {

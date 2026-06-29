@@ -69,9 +69,18 @@ const getTasks = asyncHandler(async (req, res) => {
         .populate("assignedTo", "name email role profilePhotoUrl status")
         .populate("assignedBy", "name email role")
         .populate("comments.author", "name email role profilePhotoUrl")
-        .sort({ createdAt: -1 });
 
-    return successRes(res, "Tasks fetched successfully", { tasks });
+    // Compute status counts
+    const counts = {
+        total: tasks.length,
+        pending: tasks.filter(t => t.status === 'PENDING').length,
+        inprogress: tasks.filter(t => t.status === 'INPROGRESS').length,
+        testing: tasks.filter(t => t.status === 'TESTING').length,
+        done: tasks.filter(t => t.status === 'DONE').length
+    };
+
+    return successRes(res, "Tasks fetched successfully", { tasks, counts });
+
 });
 
 const getTaskById= asyncHandler(async(req,res)=>{
